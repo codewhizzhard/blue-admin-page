@@ -7,11 +7,11 @@ import Sidebar from './sidebar'
 const Layout = () => {
   return (
  <div className="flex flex-col h-screen">
-    <div className=' md:hidden  flex items-center text-center  px-10 h-full'>
+    <div className=' lg:hidden  flex items-center text-center  px-10 h-full'>
         THE VIEW IS OPTIMIZED FOR DESKTOP. PLEASE USE A DESKTOP BROWSER FOR BETTER EXPERIENCE.
     </div>
     {/* Fixed Header */}
-    <header className="h-[80px] flex-shrink-0 bg-white shadow md:block hidden">
+    <header className="h-[80px] flex-shrink-0 bg-white shadow lg:block hidden">
         <Header />
     </header>
 
