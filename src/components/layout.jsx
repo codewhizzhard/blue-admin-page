@@ -16,7 +16,7 @@ const Layout = () => {
     </header>
 
     {/* Main Area: fills remaining height */}
-    <main className=" flex-grow overflow-hidden md:flex hidden pb-1">
+    <main className=" flex-grow overflow-hidden lg:flex hidden pb-1 ">
         {/* Sidebar */}
 
         <div className="min-w-[300px] flex-shrink-0">
