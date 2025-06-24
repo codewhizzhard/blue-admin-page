@@ -7,14 +7,18 @@ import Sidebar from './sidebar'
 const Layout = () => {
   return (
  <div className="flex flex-col h-screen">
+    <div className=' md:hidden  flex items-center text-center  px-10 h-full'>
+        THE VIEW IS OPTIMIZED FOR DESKTOP. PLEASE USE A DESKTOP BROWSER FOR BETTER EXPERIENCE.
+    </div>
     {/* Fixed Header */}
-    <header className="h-[80px] flex-shrink-0 bg-white shadow">
+    <header className="h-[80px] flex-shrink-0 bg-white shadow md:block hidden">
         <Header />
     </header>
 
     {/* Main Area: fills remaining height */}
-    <main className="flex flex-grow overflow-hidden">
+    <main className=" flex-grow overflow-hidden md:flex hidden">
         {/* Sidebar */}
+
         <div className="min-w-[300px] flex-shrink-0">
             <Sidebar />
         </div>
