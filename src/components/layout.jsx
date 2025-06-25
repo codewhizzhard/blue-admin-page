@@ -5,6 +5,7 @@ import Header from './Header/header'
 import Sidebar from './sidebar'
 
 const Layout = () => {
+    ///
   return (
  <div className="flex flex-col h-screen">
     <div className=' lg:hidden  flex items-center text-center  px-10 h-full'>
@@ -22,6 +23,7 @@ const Layout = () => {
         <div className="min-w-[300px] flex-shrink-0">
             <Sidebar />
         </div>
+
 
         {/* Content Area: scrollable */}
         <div className="flex-grow pl-4 pt-4 pr-6 bg-stone-500 overflow-y-auto">
