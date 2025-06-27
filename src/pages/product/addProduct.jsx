@@ -115,21 +115,6 @@ const AddProduct = () => {
         });
         
     }
-
-       /*  const fileToBase64 = (file) => {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onload = () => resolve(reader.result)
-                reader.onerror = (error) => reject(error)
-                reader.readAsDataURL(file)
-            })
-        }
-
-        const handleFileChange = async (files) => {
-            const convertedFiles = Array.from(files)
-            return Promise.all(convertedFiles.map((file) => fileToBase64(file)))
-            .then((base64) => console.log("Converted files:", base64))
-        } */
    
 
   return (
