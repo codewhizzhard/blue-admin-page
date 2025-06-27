@@ -13,6 +13,7 @@ import UserInfo from "./pages/user/userInfo";
 import Settings from "./pages/setting/settings";
 import Profile from "./pages/setting/profile";
 import Password from "./pages/setting/password";
+import { Protected } from "./components/Protected";
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route element={<Protected />}>
       <Route path="/" element={<Layout/>}>
         <Route index element={<Dashboard />} />
         <Route path="/prds" element={<ProductManagement />}/>
@@ -42,6 +44,7 @@ function App() {
           <Route index element={<Profile />} />
           <Route path="password" element={<Password />} />
         </Route>
+      </Route>
       </Route>
     </Routes>
     </BrowserRouter>

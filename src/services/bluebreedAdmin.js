@@ -4,8 +4,16 @@ const API = "https://blueproject-1.onrender.com/api/v1/bluebreed";
 
 export const blueBreedAdminApi = createApi({
     reducerPath: "blueBreedAdminApi",
+    
     baseQuery: fetchBaseQuery({
         baseUrl: API,
+        prepareHeaders: (headers) => {
+        const token = localStorage.getItem("token")
+        if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+        }
+        return headers;
+    },
     }),
     endpoints: (builder) => ({
         login: builder.mutation({

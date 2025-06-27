@@ -67,21 +67,24 @@ const AddProduct = () => {
     })
 
     const [addNewCatgory, {isLoading, error}] = useAddNewCatgoryMutation();
+
     const {register: categoryRegister, handleSubmit: handleCategorySubmit, formState: {errors: categoryErrors, isSubmitting: categorySubmitting}, reset: categoryReset} = useForm({resolver: zodResolver(categorySchema)});
+
     const {register: productRegister, handleSubmit: handleProductSubmit, setValue, formState: {errors: productErrors, isSubmitting: productSubmitting}, reset: productReset} = useForm({resolver: zodResolver(productSchema)})
 
     /* HandleSubmit for category and product form needed for the form submision*/
     const handleAddCategory = async (data) => {
         
-        console.log("data", data)
+        console.log("data", data.categoryName)
         try {
-            const response = await addNewCatgory({categoryName: data}).unwrap()
+            const response = await addNewCatgory({name: data.categoryName}).unwrap()
             console.log("Category added successfully:", response);
             categoryReset();
             setIsOpen(false);
             
         } catch (err) {
                 console.log("Error adding category:", err);
+                console.log("Error:", err);
         }
     }
 
@@ -183,7 +186,7 @@ const AddProduct = () => {
                     <button type='submit' className='w-full border border-[#D0D5DD] py-2 bg-[#E6B566] rounded cursor-pointer' onClick={() => setIsOpen(false)}>Cancel</button>
                     <button type='submit' className='w-full border border-[#D0D5DD] py-2 rounded' onClick={handleCategorySubmit(handleAddCategory)}>  {categorySubmitting ? "Submitting" : "Create"}</button>
                 </div>
-                {error && <p className='text-red-500 text-[12px]'>Error: {error.data?.message || "Something went wrong"}</p>}
+                {error && <p className='text-red-500 text-[12px]'>Error: {error.data?.message || "Something went wrong"}</p>} 
             </div>
         </Modal>  }
         {/*  */}

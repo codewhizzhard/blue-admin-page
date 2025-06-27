@@ -2,6 +2,10 @@ import React, { useState } from 'react'
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import signup from "../assets/adminSignup.png";
 import { useLoginMutation } from '../services/bluebreedAdmin';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setToken } from '../services/auth';
+
 
 const Login = () => {
 
@@ -11,20 +15,26 @@ const Login = () => {
 
     const [login, {isLoading, error}] = useLoginMutation();
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
      const handleLogin = async (e) => {
         //console.log("loggings", isLoading)
         e.preventDefault();
         try {
           const result = await login({email: email, password: password}).unwrap();
-          //localStorage.setItem(result?.data?.token);
-         //// dispatch(setCredentials(result.data));
-          //console.log("result",result);
-         /*  if (result.successful === true) {
-            navigate('/clothings');
-          } */
+          console.log("result", result);
+          
+          if (result.successful === true && result?.data?.token) {
+            dispatch(setToken(result.data?.token));
+            localStorage.setItem("token", result.data.token)
+            navigate("/");
+          }
+          
         } catch (err) {
           //console.log("login err", err?.data?.message);
           console.log("login err", err);
+          console.log("logins", error);
         } finally {
           console.log("logs", isLoading)
         }
@@ -58,10 +68,11 @@ const Login = () => {
                 <button type='button'  onClick={() => setShowPassword(!showPassword)} className='absolute right-4 bottom-2'>{showPassword ? <FiEye size={23}  /> :  <FiEyeOff size={23} />}</button>
                 
             </div>
-            <button type="submit" className={`w-full bg-[#E6B566] py-2 rounded text-white`}  disabled={isLoading} >
+            <button type="submit" className={`w-full bg-[#E6B566] py-2 rounded text-white cursor-pointer`}  disabled={isLoading} >
              {isLoading ? "Loading" : "Next"}
           </button>
-           {error?.data.message && <p className='text-red-500'>{error?.data.message}!</p>} 
+           {error?.data && <p className='text-red-500'>{error?.data?.message}!</p>} 
+           {error?.error && <p className='text-red-500'>Network Error!</p>}
       </form>
       <div className='space-y-4 w-full pt-4'>
         <div className='flex items-center gap-4  w-full'>
