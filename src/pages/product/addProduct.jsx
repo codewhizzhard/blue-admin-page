@@ -75,7 +75,7 @@ const AddProduct = () => {
     /* HandleSubmit for category and product form needed for the form submision*/
     const handleAddCategory = async (data) => {
         
-        console.log("data", data.categoryName)
+        
         try {
             const response = await addNewCatgory({name: data.categoryName}).unwrap()
             console.log("Category added successfully:", response);
