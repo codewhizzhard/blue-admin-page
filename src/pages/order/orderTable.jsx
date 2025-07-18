@@ -31,34 +31,29 @@ const OrderTable = ({ pageList }) => {
 
 
         
-          <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937] bg-red-400'>
+          <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937]'>
             {pageList.contents.map((content, index) => (
-            <li className=' w-full bg-blue-400' key={index}>{location.pathname === "/ords" ? <Link to={`/ords/${content.id}`} className='bg-blue-600 w-full flex'>
+            <li className=' w-full' key={index}>{location.pathname === "/ords" ? <Link to={`/ords/${content.id}`} className=' w-full flex space-y-8'>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
+              <hr className=''/>
             </Link> : <div className='flex'> 
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
-              <div className='flex-1/6 pl-3'>{content.name}</div></div>}</li>
+              <div className='flex-1/6 pl-3'>{content.name}</div></div>}
+              
+              </li>
+              
              ))}
           </ul>
        
-
-        {/* <li className='flex-1/6 pl-3'>ggggg</li>
-              <li className='flex-1/6 pl-3'>ggggg</li>
-              <li className='flex-1/6 pl-3'>ggggg</li>
-              <li className='flex-1/6 pl-3'>ggggg</li>
-              <li className='flex-1/6 pl-3'>ggggg</li>
-              <li className='w-[103px]  text-center'>hhhh</li> */}
-
-
       </div>
     </div>
   )

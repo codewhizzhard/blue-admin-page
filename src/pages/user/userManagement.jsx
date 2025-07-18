@@ -23,9 +23,9 @@ const UserManagement = () => {
                 ))
               }
             </ul>
-            <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937] bg-red-400'>
+            <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937]'>
             {headers.map((content, index) => (
-            <li className=' w-full bg-blue-400 flex' key={index}> 
+            <li className=' w-full flex' key={index}> 
               <div className='flex-1/4 pl-3'>{content}</div>
               <div className='flex-1/4 pl-3'>{content}</div>
               <div className='flex-1/4 pl-3'>{content}</div>

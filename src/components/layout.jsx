@@ -26,7 +26,7 @@ const Layout = () => {
 
 
         {/* Content Area: scrollable */}
-        <div className="flex-grow pl-4 pt-4 pr-6 bg-stone-500 overflow-y-auto">
+        <div className="flex-grow pl-4 pt-4 pr-6 bg-gray-50 overflow-y-auto">
             <Outlet />
         </div>
     </main>

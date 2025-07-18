@@ -27,10 +27,10 @@ const UserInfo = () => {
                 ))
               }
             </ul>
-            <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937] bg-red-400'>
+            <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937]'>
             {headers.map((content, index) => (
-            <li className=' w-full bg-blue-400' key={index}>
-            <Link to={`/usrs/${content.id}`} className='bg-blue-600 w-full flex'>
+            <li className=' w-full' key={index}>
+            <Link to={`/usrs/${content.id}`} className=' w-full flex'>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
               <div className='flex-1/6 pl-3'>{content.name}</div>
