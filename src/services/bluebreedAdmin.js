@@ -28,7 +28,8 @@ export const blueBreedAdminApi = createApi({
                 url: "/product/category/add",
                 method: "POST",
                 body: categoryData,
-            })
+            }),
+            invalidatesTags: ['Categories']
         }),
         addNewProduct: builder.mutation({
             query: (productData) => ({
@@ -39,9 +40,14 @@ export const blueBreedAdminApi = createApi({
         }),
         getAllCategory: builder.query({
             query: () => "/product/category/all",
-            providesTags: ['Post']
+            providesTags: ['Categories']
+        }),
+
+        getAllProducts: builder.query({
+            query: () => "/product/all",
+            providesTags: ['Products']
         })
     })
 })
 
-export const {useLoginMutation, useAddNewCatgoryMutation, useGetAllCategory} = blueBreedAdminApi;
+export const {useLoginMutation, useAddNewCatgoryMutation, useGetAllCategoryQuery, useGetAllProductsQuery} = blueBreedAdminApi;

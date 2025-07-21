@@ -2,8 +2,15 @@ import React from 'react'
 import { FaTrash } from 'react-icons/fa'
 import { FiDelete, FiPlus } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
+import { useGetAllProductsQuery } from '../../services/bluebreedAdmin'
 
 const ProductManagement = () => {
+
+  const {data, isLoading: productsLoading, error: productsError} = useGetAllProductsQuery();
+  console.log("productsData", data);
+
+
+
   return (
     <div className='h-full space-y-4 '>
 
@@ -33,28 +40,39 @@ const ProductManagement = () => {
           
 
           <div>
-         
-          <div className='w-full flex h-[72px] items-center'>
-            <div  className='flex-2/5'>
+            { data?.data?.map((product, index) => (
+                <ul className='w-full flex h-[72px] items-center'>
+              <li  className='flex-2/5 flex gap-2'>
               <input type="checkbox" />
-            </div>
-            <div className='flex-1/5'>
-              ff
-            </div>
-            <div className='flex-1/5'>
-              ff
-            </div>
-            <div className='flex-1/5'>
-              ff
-            </div>
-            <div className='flex-1/5 flex justify-between'>
-              <div>f</div>
+              <div className='w-[48px] h-[48px] rounded-[11px]'>
+                <img src={product?.information?.images[0]} alt="productImage" />
+              </div>
+              <div className='flex flex-col gap-2'>
+                <p className=' font-medium text-[14px] text-[#131523]'>{product?.information?.productName}</p>
+                <p className='text-[14px] text-[#5A607F]'>{product?.productCategory}</p>
+              </div>
+            </li>
+            <li className='flex-1/5 text-[#131523] text-[14px]'>
+              {product?.information?.currentStockNumber} in stock
+            </li>
+            <li className='flex-1/5 text-[#131523] text-[14px]'>
+              {product?.information?.color}
+            </li>
+            <li className='flex-1/5 text-[#131523] text-[14px]'>
+              ${product?.information?.price?.actualPrice?.$numberDecimal}
+            </li>
+            <li className='flex-1/5 flex justify-between text-[#131523] text-[14px]'>
+              <div>Rating</div>
               <div>gg</div>
-            </div>
-            {/* <div className='flex-1/6'>
-              ff
-            </div> */}
-          </div>
+            </li>
+
+            </ul>
+            ))
+
+            }
+         
+         
+
            <hr className='w-full text-[#D7DBEC] h-[2px]'/>
           </div>
           

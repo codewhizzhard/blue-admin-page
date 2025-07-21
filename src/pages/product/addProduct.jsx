@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { FiArrowLeft, FiArrowLeftCircle, FiArrowUpLeft, FiX } from 'react-icons/fi'
 import { clothingCheckboxes, interiorCheckboxes } from './addProductCheckboxes';
 import { Link } from 'react-router-dom';
 import Modal from '../modal';
-import { useAddNewCatgoryMutation } from '../../services/bluebreedAdmin';
+import { useAddNewCatgoryMutation, useGetAllCategoryQuery } from '../../services/bluebreedAdmin';
 import { useForm } from 'react-hook-form';
 import {z} from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,11 +27,19 @@ const AddProduct = () => {
     
 
     const [addNewCatgory, {isLoading, error}] = useAddNewCatgoryMutation();
+    const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useGetAllCategoryQuery();
+  
+         console.log("categoriesData", categoriesData?.data)
 
+
+ 
+   
     const {register: categoryRegister, handleSubmit: handleCategorySubmit, formState: {errors: categoryErrors, isSubmitting: categorySubmitting}, reset: categoryReset} = useForm({resolver: zodResolver(categorySchema)});
 
     const {register: productRegister, handleSubmit: handleProductSubmit, setValue, formState: {errors: productErrors, isSubmitting: productSubmitting}, reset: productReset} = useForm({resolver: zodResolver(productSchema)})
 
+  
+  
     /* HandleSubmit for category and product form needed for the form submision*/
     const handleAddCategory = async (data) => {
         
@@ -294,10 +302,10 @@ const AddProduct = () => {
             <div className='flex flex-col space-y-4 bg-white rounded-[6px] p-5'>
                 <h3 className='text-[16px] font-bold text-[#131523]'>Category</h3>
                     <ul className='space-y-2'>
-                    {categories.map((category, index) => (
+                    {categoriesData?.data?.map((category, index) => (
                         <li className='flex text-[#131523] text-[16px] gap-3 items-center' key={index}>
                         <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none'/>
-                        <label htmlFor="" className=''>{category}</label>
+                        <label htmlFor="" className=''>{category.name}</label>
                      </li>
                     ))}
                     </ul>
