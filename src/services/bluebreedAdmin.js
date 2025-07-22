@@ -46,8 +46,12 @@ export const blueBreedAdminApi = createApi({
         getAllProducts: builder.query({
             query: () => "/product/all",
             providesTags: ['Products']
+        }),
+        getAllUsers: builder.query({
+            query: () => "/admin/user/all",
+            providesTags: ["users"]
         })
     })
 })
 
-export const {useLoginMutation, useAddNewCatgoryMutation, useGetAllCategoryQuery, useGetAllProductsQuery} = blueBreedAdminApi;
+export const {useLoginMutation, useAddNewCatgoryMutation, useGetAllCategoryQuery, useGetAllProductsQuery, useGetAllUsersQuery} = blueBreedAdminApi;
