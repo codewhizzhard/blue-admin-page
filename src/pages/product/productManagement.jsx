@@ -7,7 +7,7 @@ import { useGetAllProductsQuery } from '../../services/bluebreedAdmin'
 const ProductManagement = () => {
 
   const {data, isLoading: productsLoading, error: productsError} = useGetAllProductsQuery();
-  console.log("productsData", data);
+  console.log("productsData", data?.data?.products);
 
 
 
@@ -40,8 +40,10 @@ const ProductManagement = () => {
           
 
           <div>
-            { data?.data?.map((product, index) => (
-                <ul className='w-full flex h-[72px] items-center'>
+            {productsLoading && <p className='flex justify-center py-4 w-full'>Products Loading...</p>}
+            { data?.data?.products?.map((product, index) => (
+              <div className='flex flex-col gap-4'>
+                <ul className='w-full flex h-[72px] items-center' key={index}>
               <li  className='flex-2/5 flex gap-2'>
               <input type="checkbox" />
               <div className='w-[48px] h-[48px] rounded-[11px]'>
@@ -65,15 +67,17 @@ const ProductManagement = () => {
               <div>Rating</div>
               <div>gg</div>
             </li>
-
+                
             </ul>
+            <hr className='w-full text-[#D7DBEC] h-[2px]'/>
+            </div>
             ))
 
             }
          
          
 
-           <hr className='w-full text-[#D7DBEC] h-[2px]'/>
+          {/*  <hr className='w-full text-[#D7DBEC] h-[2px]'/> */}
           </div>
           
         </div>

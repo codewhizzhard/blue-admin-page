@@ -54,4 +54,4 @@ export const blueBreedAdminApi = createApi({
     })
 })
 
-export const {useLoginMutation, useAddNewCatgoryMutation, useGetAllCategoryQuery, useGetAllProductsQuery, useGetAllUsersQuery} = blueBreedAdminApi;
+export const {useLoginMutation, useAddNewCatgoryMutation, useGetAllCategoryQuery, useGetAllProductsQuery, useGetAllUsersQuery, useAddNewProductMutation} = blueBreedAdminApi;

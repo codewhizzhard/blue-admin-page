@@ -3,7 +3,7 @@ import { FiArrowLeft, FiArrowLeftCircle, FiArrowUpLeft, FiX } from 'react-icons/
 import { clothingCheckboxes, interiorCheckboxes } from './addProductCheckboxes';
 import { Link } from 'react-router-dom';
 import Modal from '../modal';
-import { useAddNewCatgoryMutation, useGetAllCategoryQuery } from '../../services/bluebreedAdmin';
+import { useAddNewCatgoryMutation, useAddNewProductMutation, useGetAllCategoryQuery } from '../../services/bluebreedAdmin';
 import { useForm } from 'react-hook-form';
 import {z} from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -36,9 +36,10 @@ const AddProduct = () => {
    
     const {register: categoryRegister, handleSubmit: handleCategorySubmit, formState: {errors: categoryErrors, isSubmitting: categorySubmitting}, reset: categoryReset} = useForm({resolver: zodResolver(categorySchema)});
 
-    const {register: productRegister, handleSubmit: handleProductSubmit, setValue, formState: {errors: productErrors, isSubmitting: productSubmitting}, reset: productReset} = useForm({resolver: zodResolver(productSchema)})
+    const {register: productRegister, handleSubmit: handleProductSubmit, setValue, getValues, formState: {errors: productErrors, isSubmitting: productSubmitting}, reset: productReset} = useForm({resolver: zodResolver(productSchema)})
+    console.log("formErr:", productErrors)
 
-  
+    const [addNewProduct, {isLoading: addProductLoading, error: addproductError}] = useAddNewProductMutation()
   
     /* HandleSubmit for category and product form needed for the form submision*/
     const handleAddCategory = async (data) => {
@@ -57,14 +58,23 @@ const AddProduct = () => {
         }
     }
 
-    const handleAddProduct = (data) => {
-        console.log("productData", data)
-        try {
 
-        } catch (err) {
 
-        }
+
+    const handleAddProduct = async (data) => {
+        console.log("category", data.categoryId)
+        console.log("info", data.information)
+    console.log("Data:", data);
+    try {
+        const res = await addNewProduct({categoryId: data.categoryId, information: data.information}).unwrap();
+        console.log("load:", addProductLoading);
+        console.log("response:",res);
+    } catch (err) {
+        console.log("err:", err)
     }
+ 
+    };
+
 
 
     const handleClick = (btn) => {
@@ -111,18 +121,49 @@ const AddProduct = () => {
 
     const [images, setImages] = useState([]);
    
-
     const handleFileChange = async (files) => {
         const fileArray = Array.from(files);
-        return Promise.all(fileArray.map((file) => fileToBase64(file)
-        )).then((base64Files) => {
-            setImages(base64Files);
-            setValue("images",base64Files);
+        try {
+            const base64Files = await Promise.all(
+            fileArray.map((file) => fileToBase64(file))
+            );
+            setImages(base64Files); 
+            setValue("information.images", base64Files, { shouldValidate: true }); // important: validate
             console.log("images", base64Files);
-        }).catch((error) => {
+        } catch (error) {
             console.error("Error converting files to base64:", error);
-        });
-        
+        }
+        };
+
+
+
+    const handleCheckboxChange = (path, optionName) => (e) => {
+        const currentValues = getValues(path) || [];  // use getValues directly
+        //console.log("cvalues:", currentValues)
+        const updated = e.target.checked
+        ? [...currentValues, optionName]
+        : currentValues.filter((v) => v !== optionName);
+
+        setValue(path, updated, { shouldValidate: true }); // update form state
+    
+       // console.log("cvalues:", currentValues)
+    }
+
+    const handleAddCategoryToCreatingProduct = (categoryId) => (e) => {
+        //console.log("id:", categoryId)
+        if (e.target.checked) {
+            setValue("categoryId", categoryId)
+
+            //unchcked others
+            const checkBoxes = document.querySelectorAll("input[name='categoryCheckBoxes']")
+            checkBoxes.forEach((cb) => {
+                //console.log(cb.value)
+                if (cb?.value !== categoryId) cb.checked = false
+            })
+        } else {
+            // uncheck all
+            setValue("categoryId", "")
+        }
     }
    
 
@@ -146,6 +187,7 @@ const AddProduct = () => {
         {/*  */}
 
         <form className='min-h-full  space-y-4' onSubmit={handleProductSubmit(handleAddProduct)}>
+
    
         <div className='justify-between h-15 flex items-center'>
             <div className=' flex flex-col'>
@@ -163,28 +205,28 @@ const AddProduct = () => {
             <h3 className='text-[16px]'>Information</h3>
             <div className='space-y-1 flex flex-col '>
                 <label htmlFor="productName" className='text-[14px] text-[#5A607F]'>Product Name</label>
-                <input id="productName" type="text" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none' placeholder='e.g., Dress, Sofa, Curtain' {...productRegister("productName")}/>
-                {productErrors.productName && <p className='text-red-500 text-[12px]'>{productErrors.productName.message}</p>   }
+                <input id="productName" type="text" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none' placeholder='e.g., Dress, Sofa, Curtain' {...productRegister("information.productName")}/>
+                {productErrors?.information?.productName && <p className='text-red-500 text-[12px]'>{productErrors.information.productName.message}</p>   }
             </div>
             <div className='space-y-1 flex flex-col '>
                 <label htmlFor="productDescription" className='text-[14px] text-[#5A607F]'>Product Description</label>
-                <textarea id='productDescription' type="text" className='w-full h-24 pt-1 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none resize-none' placeholder='Describe the design, fabric, or material details' {...productRegister("productDescription")}/>
-                {productErrors.productDescription && <p className='text-red-500 text-[12px]'>{productErrors.productDescription.message}</p>   }
+                <textarea id='productDescription' type="text" className='w-full h-24 pt-1 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none resize-none' placeholder='Describe the design, fabric, or material details' {...productRegister("information.productDescription")}/>
+                {productErrors?.information?.productDescription && <p className='text-red-500 text-[12px]'>{productErrors.information.productDescription.message}</p>   }
             </div>
             <div className='space-y-1 flex flex-col '>
                 <label htmlFor="productFeature" className='text-[14px] text-[#5A607F]'>Product Features</label>
-                <textarea id="productFeature" type="text" className='w-full h-24 pt-1 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none resize-none' placeholder='Describe the design, fabric, or material features' {...productRegister("productFeatures")}/>
-                {productErrors.productFeatures && <p className='text-red-500 text-[12px]'>{productErrors.productFeatures.message}</p>   }
+                <textarea id="productFeature" type="text" className='w-full h-24 pt-1 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none resize-none' placeholder='Describe the design, fabric, or material features' {...productRegister("information.productFeatures")}/>
+                {productErrors?.information?.productFeatures && <p className='text-red-500 text-[12px]'>{productErrors.information.productFeatures.message}</p>   }
             </div>
             <div className='space-y-1 flex flex-col '>
                 <label htmlFor="currentStockNumber" className='text-[14px] text-[#5A607F]'>How many in Stock?</label>
-                <input type="number" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none' placeholder='e.g., 34' id='currentStockNumber' {...productRegister("currentStockNumber", { valueAsNumber: true})} />
-                {productErrors.currentStockNumber && <p className='text-red-500 text-[12px]'>{productErrors.currentStockNumber.message}</p>   }
+                <input type="number" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none' placeholder='e.g., 34' id='currentStockNumber' {...productRegister("information.currentStockNumber", { valueAsNumber: true})} />
+                {productErrors?.information?.currentStockNumber && <p className='text-red-500 text-[12px]'>{productErrors.information.currentStockNumber.message}</p>   }
             </div>
             <div className='space-y-1 flex flex-col pb-4 '>
                 <label htmlFor="color" className='text-[14px] text-[#5A607F]'>Color</label>
-                <input type="text" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none' placeholder='e.g., white, black, blue'  id='color' {...productRegister("color")}/>
-                {productErrors.color && <p className='text-red-500 text-[12px]'>{productErrors.color.message}</p>   }
+                <input type="text" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none' placeholder='e.g., white, black, blue'  id='color' {...productRegister("information.color")}/>
+                {productErrors?.information?.color && <p className='text-red-500 text-[12px]'>{productErrors.information.color.message}</p>   }
             </div>
             <hr className='w-full text-[#D7DBEC] '/>
             <div className='space-y-1 flex flex-col pb-4 '>
@@ -201,14 +243,14 @@ const AddProduct = () => {
                         }
                     </div>
                     <div className=' border-[#A1A7C4] border-dashed border h-[168px] rounded flex justify-center items-center flex-col space-y-4'>
-                        <input type="file" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none hidden' placeholder='e.g., white, black, blue' multiple id='images' {...productRegister("images")} onChange={(e) => handleFileChange(e.target.files)}/>
+                        <input type="file" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none hidden' placeholder='e.g., white, black, blue' multiple id='images' onChange={(e) => handleFileChange(e.target.files)}/>
                         <label htmlFor="images" className='text-[#E6B566] px-10 py-1 border border-[#D7DBEC] rounded'>Upload Product Image</label>
                         <span className='text-[#5A607F] text-[14px]'>Drag and drop product images here</span>
                     </div>
 
                 </div>
 
-                {productErrors.images && <p className='text-red-500 text-[12px]'>{productErrors.images.message}</p>   }
+                {productErrors?.information?.images && <p className='text-red-500 text-[12px]'>{productErrors.information.images.message}</p>   }
             </div>
             {/*  */}
             <div className='space-y-3 '>
@@ -216,13 +258,13 @@ const AddProduct = () => {
                 <div className='flex w-full justify-between'>
                     <div className='flex flex-col w-[47%]'>
                     <label htmlFor="actualPrice" className='text-[14px] text-[#5A607F] pb-3'>Product Price</label>
-                    <input type="number" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none'  id='actualPrice' {...productRegister("price.actualPrice")}/>
-                    {productErrors.price?.actualPrice && <p className='text-red-500 text-[12px]'>{productErrors.price.actualPrice.message}</p>   }
+                    <input type="number" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none'  id='actualPrice' {...productRegister("information.price.actualPrice")}/>
+                    {productErrors?.information?.price?.actualPrice && <p className='text-red-500 text-[12px]'>{productErrors.information.price.actualPrice.message}</p>   }
                     </div>
                     <div className='flex flex-col w-[47%]'>
                     <label htmlFor="discountPrice" className='text-[14px] text-[#5A607F] pb-3'>Discount Price (if applicable)</label>
-                    <input type="text" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none'  id="discountPrice" {...productRegister("price.discountPrice")}/>
-                    {productErrors.price?.discountPrice && <p className='text-red-500 text-[12px]'>{productErrors.price.discountPrice.message}</p>   }
+                    <input type="text" className='w-full py-2 px-4 rounded text-[#A1A7C4] text-[16px] border border-[#D9E1EC] outline-none'  id="discountPrice" {...productRegister("information.price.discountPrice")}/>
+                    {productErrors?.information?.price?.discountPrice && <p className='text-red-500 text-[12px]'>{productErrors.information.price.discountPrice.message}</p>   }
                     </div>
                 </div>
                 <div className='flex gap-2'>
@@ -266,7 +308,7 @@ const AddProduct = () => {
                         <ul className='space-y-2'>
                             {group.options.map((option, index) => (
                                 <li key={index} className='flex gap-3 items-center'>
-                                    <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none'/>
+                                    <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none' onChange={handleCheckboxChange(`information.otherOptions.clothingReadyToWearSizes.${group.key}`, option.value)}/>
                                     <label htmlFor="" className='text-[16px] text-[#131523]'>{option.name}</label>
                                 </li>
 
@@ -274,7 +316,8 @@ const AddProduct = () => {
                         </ul>
                     </div>
                     )) 
-                    }
+                    } 
+                    
                 </div>
                 <div className='space-y-3 w-full'>
                     <h3>Home & Interior Product Sizes:</h3>
@@ -284,7 +327,7 @@ const AddProduct = () => {
                         <ul className='space-y-2'>
                             {group.options.map((option, index) => (
                                 <li key={index} className='flex gap-3 items-center'>
-                                    <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none'/>
+                                    <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none' onChange={handleCheckboxChange(`information.otherOptions.homeInteriorAndProductSizes.${group.key}`,option.value)}/>
                                     <label htmlFor="" className='text-[16px] text-[#131523]'>{option.name}</label>
                                 </li>
 
@@ -302,12 +345,15 @@ const AddProduct = () => {
             <div className='flex flex-col space-y-4 bg-white rounded-[6px] p-5'>
                 <h3 className='text-[16px] font-bold text-[#131523]'>Category</h3>
                     <ul className='space-y-2'>
-                    {categoriesData?.data?.map((category, index) => (
+                        {categoriesLoading && <p>Loading categories...</p>}
+                        {categoriesData?.data?.map((category, index) => (
                         <li className='flex text-[#131523] text-[16px] gap-3 items-center' key={index}>
-                        <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none'/>
+                        <input type="checkbox" className='w-5 h-5 pt-1 border border-[#D7DBEC] rounded outline-none' onChange={handleAddCategoryToCreatingProduct(category?._id)} name='categoryCheckBoxes' value={category?._id}/>
                         <label htmlFor="" className=''>{category.name}</label>
                      </li>
+                     
                     ))}
+                     {productErrors?.categoryId && <p className='text-red-500 text-[12px]'>{productErrors.categoryId?.message}</p>   }
                     </ul>
                 <span className='text-[#E6B566] text-[16px] font-semibold cursor-pointer' onClick={() => setIsOpen(true)}>Add a New Category</span>
             </div>
