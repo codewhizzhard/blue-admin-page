@@ -31,6 +31,7 @@ const UserManagement = () => {
               }
             </ul>
             <ul className='py-3 px-2 space-y-3 text-[14px] text-[#1F2937]'>
+              {isLoading && <p className='p-4 w-full flex justify-center'>Users data Loading...</p>}
             {usersData?.data?.users.map((user, index) => (
             <li className=' w-full flex' key={index}> 
               <div className='flex-1/4 pl-3 flex gap-2 '><div className='w-[28px] h-[28px] rounded-[999px]'>g</div>{user.role}</div>
